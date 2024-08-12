@@ -14,6 +14,9 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/huh/spinner"
 	"github.com/joho/godotenv"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
+	"golang.org/x/text/number"
 )
 
 var (
@@ -96,5 +99,14 @@ func main() {
 		Action(convert).
 		Run()
 
-	fmt.Printf("%s %.2f -> %s %.2f\n", fromCurr, amount, toCurr, converted)
+	// fmt.Printf("%s %.2f -> %s %.2f\n", fromCurr, amount, toCurr, converted)
+
+	printer := message.NewPrinter(language.English)
+	printer.Printf(
+		"%s %v -> %s %v\n",
+		fromCurr,
+		number.Decimal(amount, number.MinFractionDigits(2), number.MaxFractionDigits(2)),
+		toCurr,
+		number.Decimal(converted, number.MinFractionDigits(2), number.MaxFractionDigits(2)),
+	)
 }
