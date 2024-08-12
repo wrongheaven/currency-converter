@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/huh/spinner"
@@ -22,7 +24,10 @@ var (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
+	rootPath := os.Getenv("CCONV_PATH")
+	envPath := filepath.Join(rootPath, ".env")
+
+	if err := godotenv.Load(envPath); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -59,23 +64,11 @@ func main() {
 	var amountStr string
 	form := huh.NewForm(
 		huh.NewGroup(
-			huh.NewSelect[string]().
-				Title("From currency:").
-				Options(
-					huh.NewOption("USD", "USD"),
-					huh.NewOption("EUR", "EUR"),
-					huh.NewOption("GBP", "GBP"),
-					huh.NewOption("NOK", "NOK"),
-				).
+			huh.NewInput().
+				Title("From").
 				Value(&fromCurr),
-			huh.NewSelect[string]().
-				Title("To currency:").
-				Options(
-					huh.NewOption("USD", "USD"),
-					huh.NewOption("EUR", "EUR"),
-					huh.NewOption("GBP", "GBP"),
-					huh.NewOption("NOK", "NOK"),
-				).
+			huh.NewInput().
+				Title("To").
 				Value(&toCurr),
 			huh.NewInput().
 				Title("Amount").
@@ -94,6 +87,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fromCurr = strings.ToUpper(fromCurr)
+	toCurr = strings.ToUpper(toCurr)
 
 	spinner.New().
 		Title("Converting ...").
