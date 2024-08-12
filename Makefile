@@ -1,6 +1,6 @@
 install:
-	@go build -o cconv
-	@mv cconv $(GOPATH)/bin/cconv
+	@go build -o bin/cconv
+	@cp bin/cconv $(GOPATH)/bin/cconv
 
 run: install
 	@cconv
